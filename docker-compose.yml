@@ -5,7 +5,7 @@ services:
       - DOCKER_CERT_PATH=/certs/client
       - DOCKER_HOST=tcp://docker:2376
       - DOCKER_TLS_VERIFY=1
-    image: jenkins/jenkins:lts-jdk11 # <.>
+    image: jenkins/jenkins:lts-jdk17 # <.>
     ports:
       - "8080:8080"
       - "50000:50000"
