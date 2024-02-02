@@ -72,6 +72,7 @@ fabric.properties
 
 # Ignore sonarlint results
 .idea/sonarlint/issuestore
+.idea/sonarlint/securityhotspotstore
 
 # Ignore the maven target folder
 target/

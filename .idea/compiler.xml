@@ -9,8 +9,5 @@
         <module name="vds_jenkins_with_docker_desktop_simple" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="vds_jenkins_with_docker_desktop_simple" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>
