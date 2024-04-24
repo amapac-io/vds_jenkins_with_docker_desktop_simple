@@ -1,8 +1,8 @@
-name: Merge Dependabot Pull Requests when tests are succesfull
+name: Test on all branches and merge Dependabot Pull Requests when tests are succesfull
 
 on:
   push:
-    branches: [ "!main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
