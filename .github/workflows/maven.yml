@@ -34,7 +34,7 @@ jobs:
         reporter: java-junit
         fail-on-error: true
     - name: merge dependabot pull request
-      if: github.actor == 'tkleiber' && github.event_name == 'pull_request'
+      # if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
       uses: juliangruber/merge-pull-request-action@v1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
