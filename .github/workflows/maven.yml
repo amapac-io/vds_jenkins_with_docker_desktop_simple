@@ -2,7 +2,7 @@ name: Merge Dependabot Pull Requests when tests are succesfull
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "!main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -21,15 +21,22 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B test --file pom.xml
-
     - name: Test Report
       uses: dorny/test-reporter@v1
       if: success() || failure()
       with:
-        name: Maven Tests 
+        name: archive test results
         path: target/surefire-reports/*.xml
         reporter: java-junit
         fail-on-error: true
+    - name: merge dependabot pull request
+      if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
+      uses: juliangruber/merge-pull-request-action@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        number: 1
+        method: merge # squash merge rebase
+        repo: juliangruber/octokit-action
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
