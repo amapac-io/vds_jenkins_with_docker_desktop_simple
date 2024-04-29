@@ -2,7 +2,7 @@ name: Test on all branches and merge Dependabot Pull Requests when tests are suc
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "!main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -35,12 +35,12 @@ jobs:
         fail-on-error: true
     - name: merge dependabot pull request
       # if: github.actor == 'dependabot[bot]' && github.event_name == 'pull_request'
-      uses: juliangruber/merge-pull-request-action@v1
+      uses: devmasx/merge-branch@master
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        number: 1
-        method: squash # merge rebase
-        repo: juliangruber/octokit-action
+        type: now
+        target_branch: main
+        message: Merge staging into uat
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
