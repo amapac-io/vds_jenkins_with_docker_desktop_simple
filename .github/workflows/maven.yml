@@ -2,7 +2,7 @@ name: Test on all branches and merge Dependabot Pull Requests when tests are suc
 
 on:
   push:
-    branches: [ "!main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
