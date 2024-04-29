@@ -39,7 +39,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         number: 1
-        method: merge # squash merge rebase
+        method: squash # merge rebase
         repo: juliangruber/octokit-action
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
