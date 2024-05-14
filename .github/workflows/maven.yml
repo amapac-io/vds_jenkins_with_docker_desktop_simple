@@ -1,4 +1,4 @@
-name: Test and
+name: test and if successful, merge dependabot pull requests
 on:
   push:
   pull_request:
@@ -29,7 +29,7 @@ jobs:
           reporter: java-junit
           fail-on-error: true
 
-  dependabot:
+  merge_dependabot_pull_requests:
     if: github.actor == 'dependabot[bot]'
 
     runs-on: ubuntu-latest
