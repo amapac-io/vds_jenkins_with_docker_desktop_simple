@@ -47,32 +47,28 @@ jobs:
           fail-on-error: true
 
   merge_dependabot_pull_requests:
+    name: Merge Dependabot Pull Requests
     if: github.actor == 'dependabot[bot]'
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Dependabot metadata
       id: metadata
       uses: dependabot/fetch-metadata@v2
       with:
         github-token: "${{ secrets.GITHUB_TOKEN }}"
-
     - name: Enable auto-merge for Dependabot PRs
       if: contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'
       run: gh pr merge --auto --merge "$PR_URL"
       env:
         PR_URL: ${{github.event.pull_request.html_url}}
         GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
     - name: Approve a PR
       run: gh pr review --approve "$PR_URL"
       env:
         PR_URL: ${{github.event.pull_request.html_url}}
         GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
