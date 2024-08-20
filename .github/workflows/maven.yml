@@ -1,7 +1,7 @@
 name: test and if successful, merge dependabot pull requests
 on:
   push:
-  pull_request:
+  pull_request_target:
 
 jobs:
   test:
