@@ -3,6 +3,9 @@ on:
   push:
   pull_request_target:
 
+permissions:
+  contents: write # Allows the workflow to write to the repository, e.g., merge PRs
+
 jobs:
   test:
     runs-on: ubuntu-latest
