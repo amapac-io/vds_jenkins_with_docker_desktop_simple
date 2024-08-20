@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub Actor
-        run: echo "GitHub Actor: ${{ github.actor }}"
+      - run: echo "The job was automatically triggered by actor ${{ github.actor }}."
 
   test:
     runs-on: ubuntu-latest
