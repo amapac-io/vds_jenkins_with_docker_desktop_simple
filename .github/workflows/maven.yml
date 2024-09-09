@@ -1,6 +1,7 @@
 name: Build, Test and Merge optional
 on:
   push:
+  pull_request:
   pull_request_target:
 
 permissions:
@@ -46,29 +47,38 @@ jobs:
           reporter: java-junit
           fail-on-error: true
 
-  merge_dependabot_pull_requests:
-    name: Merge Dependabot Pull Requests
-    if: github.actor == 'dependabot[bot]'
+  dependabot_auto_approve:
+    name: Dependabot auto-approve
     runs-on: ubuntu-latest
+    # Checking the author will prevent your Action run failing on non-Dependabot PRs
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'owner/my_repo'
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Dependabot metadata
-      id: metadata
-      uses: dependabot/fetch-metadata@v2
-      with:
-        github-token: "${{ secrets.GITHUB_TOKEN }}"
-    - name: Enable auto-merge for Dependabot PRs
-      if: contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'
-      run: gh pr merge --auto --merge "$PR_URL"
-      env:
-        PR_URL: ${{github.event.pull_request.html_url}}
-        GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    - name: Approve a PR
-      run: gh pr review --approve "$PR_URL"
-      env:
-        PR_URL: ${{github.event.pull_request.html_url}}
-        GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v2
+      - uses: actions/checkout@v4
+      - name: Approve a PR if not already approved
+        run: |
+          gh pr checkout "$PR_URL" # sets the upstream metadata for `gh pr status`
+          if [ "$(gh pr status --json reviewDecision -q .currentBranch.reviewDecision)" != "APPROVED" ];
+          then gh pr review --approve "$PR_URL"
+          else echo "PR already approved, skipping additional approvals to minimize emails/notification noise.";
+          fi
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  dependabot_auto_merge:
+    name: Dependabot auto-merge
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v2
+      - name: Enable auto-merge for Dependabot PRs
+        if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'rails') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
