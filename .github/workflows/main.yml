@@ -14,8 +14,15 @@ jobs:
     name: Print Context
     runs-on: ubuntu-latest
     steps:
-      - name: Print GitHub Actor
-        run: echo "The job was automatically triggered by actor ${{ github.actor }}."
+      - name: Print github.actor
+        run: echo "github.actor ${{ github.actor }}."
+      - name: github.event.pull_request.user.login
+        run: echo "github.event.pull_request.user.login is ${{ github.event.pull_request.user.login }}."
+      - name: steps.dependabot-metadata.outputs.dependency-names
+        run: echo "steps.dependabot-metadata.outputs.dependency-names is ${{ steps.dependabot-metadata.outputs.dependency-names }}."
+      - name: steps.dependabot-metadata.outputs.update-type
+        run: echo "steps.dependabot-metadata.outputs.update-type is ${{ steps.dependabot-metadata.outputs.update-type }}."
+
 
   test:
     name: Build and Test with Maven
@@ -77,7 +84,6 @@ jobs:
         id: dependabot-metadata
         uses: dependabot/fetch-metadata@v2
       - name: Enable auto-merge for Dependabot PRs
-        if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'rails') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch'}}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
